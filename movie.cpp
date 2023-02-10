@@ -20,15 +20,18 @@ Movie::~Movie()
 std::set<std::string> Movie::keywords() const
 {
 	std::set<std::string> title = parseStringToWords(getName());
-	std::set<std::string> genre = parseStringToWords(genre_);
-
-	std::set<std::string> result = setUnion(title, genre);
+	std::set<std::string> gene = parseStringToWords(genre_);
+	
+	std::set<std::string> result = setUnion(title, gene);
 	return result;
 }
 
 std::string Movie::displayString() const{
 	std::string result = getName() + "\nGenre: " + genre_ + " Rating: " + rating_ + "\n";
-	result += to_string(getPrice()) + " " + to_string(getQty()) + " left.";
+	std::string temp = to_string(getPrice());
+	size_t per = temp.find(".") + 3;
+	temp = temp.substr(0, per);
+	result += temp + " " + to_string(getQty()) + " left.";
 
 	return result; 
 }

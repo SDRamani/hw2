@@ -29,7 +29,10 @@ std::set<std::string> Clothing::keywords() const
 
 std::string Clothing::displayString() const{
 	std::string result = getName() + "\nSize: " + size_ + " Brand: " + brand_ + "\n";
-	result += to_string(getPrice()) + " " + to_string(getQty()) + " left.";
+std::string temp = to_string(getPrice());
+	size_t per = temp.find(".") + 3;
+	temp = temp.substr(0, per);
+	result += temp + " " + to_string(getQty()) + " left.";
 
 	return result; 
 }

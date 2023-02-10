@@ -15,7 +15,12 @@ MyDataStore::MyDataStore()
 
 MyDataStore::~MyDataStore()
 {
-	prodList.clear();
+	for (size_t i = 0; i < prodList.size(); i++){
+		delete prodList[i];
+	}
+	for (size_t i = 0; i < userList.size(); i++){
+		delete userList[i];
+	}
 }
 
 std::vector<Product*> MyDataStore::search(std::vector<std::string>& terms, int type)
@@ -92,7 +97,7 @@ void MyDataStore::dump(std::ostream& ofile){
 void MyDataStore::addCart(std::string u, Product* p){
 	std::map<std::string, User*>::iterator jt = userMap.find(u);
 	if (jt == userMap.end()){
-		cout << "Invalid Input";
+		cout << "Invalid request";
 		return;
 	}
 	User* temp = jt->second;
@@ -104,30 +109,49 @@ void MyDataStore::addCart(std::string u, Product* p){
 
 void MyDataStore::displayCart(std::string u){
 	std::map<std::string, User*>::iterator jt = userMap.find(u);
+	if (jt == userMap.end()){
+		cout << "Invalid username";
+		return;
+	}
 	User* temp2 = jt->second;
 	std::map<User*, std::vector<Product*>>::iterator it = cart.find(temp2);
 	std::vector<Product*> temp = it->second;
 	for (size_t i = 0; i < temp.size(); i++){
 		cout << "Item " << (i+1) << endl;
-		cout << (temp[i])->displayString();
+		cout << (temp[i])->displayString() << "\n";
 	}
 }
 
 void MyDataStore::buyCart(std::string u){
 	std::map<std::string, User*>::iterator jt = userMap.find(u);
+	
+	if (jt == userMap.end()){
+		cout << "Invalid username";
+		return;
+	}
 	User* temp2 = jt->second;
 	std::map<User*, std::vector<Product*>>::iterator it = cart.find(temp2);
+	if (it == cart.end()){
+		cout << "Invalid request";
+		return;
+	}
 	std::vector<Product*> temp = it->second;
+	std::vector<int> remove;
 	for (size_t i = 0; i < temp.size(); i++){
 		double price = temp[i]->getPrice();
 		if (temp2->getBalance() < price){
 			continue;
 		}
-		if (temp[i]->getQty() < 1){
+		else if (temp[i]->getQty() < 1){
 			continue;
 		}
-		temp[i]->subtractQty(1);
-		temp2->deductAmount(price);
-
+		else{
+			temp[i]->subtractQty(1);
+			temp2->deductAmount(price);
+			remove.push_back(i);
+		}
+	}
+	for (size_t i = remove.size() - 1; i <= 0; i--){
+		(it->second).erase((it->second).begin() + i);
 	}
 }

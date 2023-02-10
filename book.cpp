@@ -30,7 +30,10 @@ std::set<std::string> Book::keywords() const
 
 std::string Book::displayString() const {
 	std::string result = getName() + "\nAuthor: " + author_ + " ISBN: " + isbn_ + "\n";
-	result += to_string(getPrice()) + " " + to_string(getQty()) + " left.";
+	std::string temp = to_string(getPrice());
+	size_t per = temp.find(".") + 3;
+	temp = temp.substr(0, per);
+	result += temp + " " + to_string(getQty()) + " left.";
 
 	return result; 
 }
